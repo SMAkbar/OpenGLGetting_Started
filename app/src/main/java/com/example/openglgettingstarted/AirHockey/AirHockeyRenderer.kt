@@ -2,6 +2,7 @@ package com.example.openglgettingstarted.AirHockey
 
 import android.content.Context
 import android.opengl.GLES20
+import android.opengl.Matrix.orthoM
 import com.example.openglgettingstarted.AirHockey.CoordinateData.CoordinateData
 import com.example.openglgettingstarted.R
 import com.example.openglgettingstarted.util.LoggerConfig
@@ -56,8 +57,9 @@ class AirHockeyRenderer {
     }
 
     private fun setPositionAndColorLocation() {
-        uColorLocation = GLES20.glGetUniformLocation(program, U_COLOR)
-        aPositionLocation = GLES20.glGetAttribLocation(program, A_POSITION);
+        aColorLocation = GLES20.glGetAttribLocation(program, A_COLOR)
+        aPositionLocation = GLES20.glGetAttribLocation(program, A_POSITION)
+//        uMatrixLocation = GLES20.glGetUniformLocation(program, U_MATRIX)
     }
 
     private fun setAttributes() {
@@ -67,7 +69,17 @@ class AirHockeyRenderer {
             POSITION_COMPONENT_COUNT,
             GLES20.GL_FLOAT,
             false,
-            0,
+            STRIDE,
+            vertexBuffer)
+
+
+        vertexBuffer.position(POSITION_COMPONENT_COUNT)
+        GLES20.glVertexAttribPointer(
+            aColorLocation,
+            POSITION_COMPONENT_COUNT,
+            GLES20.GL_FLOAT,
+            false,
+            STRIDE,
             vertexBuffer)
     }
 
@@ -82,33 +94,51 @@ class AirHockeyRenderer {
         setPositionAndColorLocation()
 
         setAttributes()
+
         GLES20.glEnableVertexAttribArray(aPositionLocation)
+        GLES20.glEnableVertexAttribArray(aColorLocation)
     }
 
     public fun drawTable(){
-        GLES20.glUniform4f(uColorLocation, 1.0f, 1.0f, 1.0f, 1.0f)
+//        GLES20.glUniform4f(uColorLocation, 1.0f, 1.0f, 1.0f, 1.0f)
         GLES20.glDrawArrays(GLES20.GL_TRIANGLE_FAN, 0, 6)
 
-        GLES20.glUniform4f(uColorLocation, 1.0f, 0.0f, 0.0f, 1.0f);
+//        GLES20.glUniform4f(uColorLocation, 1.0f, 0.0f, 0.0f, 1.0f);
         GLES20.glDrawArrays(GLES20.GL_LINES, 6, 2);
 
-        GLES20.glUniform4f(uColorLocation, 0.0f, 0.0f, 1.0f, 1.0f)
+//        GLES20.glUniform4f(uColorLocation, 0.0f, 0.0f, 1.0f, 1.0f)
         GLES20.glDrawArrays(GLES20.GL_POINTS, 8, 1)
 
-        GLES20.glUniform4f(uColorLocation, 1.0f, 0.0f, 0.0f, 1.0f)
+//        GLES20.glUniform4f(uColorLocation, 1.0f, 0.0f, 0.0f, 1.0f)
         GLES20.glDrawArrays(GLES20.GL_POINTS, 9, 1)
+    }
+
+    public fun adjustRatio(width : Int, height : Int) {
+        if (width > height) {
+            val aspectRatio = width.toFloat() / height.toFloat()
+            orthoM(projectionMatrix, 0, -aspectRatio, aspectRatio, -1f, 1f, -1f, 1f)
+        } else {
+            val aspectRatio = height.toFloat() / width.toFloat()
+            orthoM(projectionMatrix, 0, -1f, 1f, -aspectRatio, aspectRatio, -1f, 1f)
+        }
     }
 
     companion object {
         private val BYTES_PER_FLOAT= 4
         private val POSITION_COMPONENT_COUNT = 2
+        private val COLOR_COMPONENT_COUNT = 3
+        private val STRIDE = (POSITION_COMPONENT_COUNT + COLOR_COMPONENT_COUNT) * BYTES_PER_FLOAT
 
-        private val U_COLOR : String = "u_Color"
         private val A_POSITION : String = "a_Position"
+        private val A_COLOR : String = "a_Color"
+        private val U_MATRIX : String = "u_Matrix"
 
         private var program : Int = -1
 
-        private var uColorLocation : Int = -1
         private var aPositionLocation : Int = -1
+        private var aColorLocation : Int = -1
+        private var uMatrixLocation : Int = -1
+
+        private val projectionMatrix : FloatArray = FloatArray(16)
     }
 }
