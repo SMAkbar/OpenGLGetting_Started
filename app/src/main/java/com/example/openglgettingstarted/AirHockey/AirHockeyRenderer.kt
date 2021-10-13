@@ -59,7 +59,7 @@ class AirHockeyRenderer {
     private fun setPositionAndColorLocation() {
         aColorLocation = GLES20.glGetAttribLocation(program, A_COLOR)
         aPositionLocation = GLES20.glGetAttribLocation(program, A_POSITION)
-//        uMatrixLocation = GLES20.glGetUniformLocation(program, U_MATRIX)
+        uMatrixLocation = GLES20.glGetUniformLocation(program, U_MATRIX)
     }
 
     private fun setAttributes() {
@@ -100,6 +100,9 @@ class AirHockeyRenderer {
     }
 
     public fun drawTable(){
+
+        GLES20.glUniformMatrix4fv(uMatrixLocation, 1, false, projectionMatrix, 0)
+
 //        GLES20.glUniform4f(uColorLocation, 1.0f, 1.0f, 1.0f, 1.0f)
         GLES20.glDrawArrays(GLES20.GL_TRIANGLE_FAN, 0, 6)
 
@@ -111,6 +114,8 @@ class AirHockeyRenderer {
 
 //        GLES20.glUniform4f(uColorLocation, 1.0f, 0.0f, 0.0f, 1.0f)
         GLES20.glDrawArrays(GLES20.GL_POINTS, 9, 1)
+
+
     }
 
     public fun adjustRatio(width : Int, height : Int) {
@@ -121,6 +126,7 @@ class AirHockeyRenderer {
             val aspectRatio = height.toFloat() / width.toFloat()
             orthoM(projectionMatrix, 0, -1f, 1f, -aspectRatio, aspectRatio, -1f, 1f)
         }
+
     }
 
     companion object {
