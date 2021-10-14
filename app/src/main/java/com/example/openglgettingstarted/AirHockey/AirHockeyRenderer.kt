@@ -131,7 +131,7 @@ class AirHockeyRenderer {
 
     companion object {
         private val BYTES_PER_FLOAT= 4
-        private val POSITION_COMPONENT_COUNT = 2
+        private val POSITION_COMPONENT_COUNT = 4
         private val COLOR_COMPONENT_COUNT = 3
         private val STRIDE = (POSITION_COMPONENT_COUNT + COLOR_COMPONENT_COUNT) * BYTES_PER_FLOAT
 
