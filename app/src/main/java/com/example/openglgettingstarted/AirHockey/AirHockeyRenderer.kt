@@ -2,7 +2,9 @@ package com.example.openglgettingstarted.AirHockey
 
 import android.content.Context
 import android.opengl.GLES20
+import android.opengl.Matrix
 import android.opengl.Matrix.*
+import android.util.Log
 import com.example.openglgettingstarted.AirHockey.CoordinateData.CoordinateData
 import com.example.openglgettingstarted.R
 import com.example.openglgettingstarted.util.LoggerConfig
@@ -129,14 +131,17 @@ class AirHockeyRenderer {
 //        }
 
         val modelMatrix : FloatArray = FloatArray(16)
-        MatrixHelper.perspectiveM(projectionMatrix, 45.toFloat(), width.toFloat() / height.toFloat(), 1f, 0f)
+        MatrixHelper.perspectiveM(projectionMatrix, 45.toFloat(), width.toFloat() / height.toFloat(), 1f, 10f)
         setIdentityM(modelMatrix, 0)
-        translateM(modelMatrix, 0, 0f, 0f, -2f)
+//        translateM(modelMatrix, 0, 0f, 0f, -2f)
+
+        // adding rotation to modelMatrix
+        translateM(modelMatrix, 0, 0f, 0f, -2.5f)
+        rotateM(modelMatrix, 0, -60f, 1f, 0f, 0f)
 
         val temp : FloatArray = FloatArray(16)
         multiplyMM(temp, 0, projectionMatrix, 0, modelMatrix, 0)
         System.arraycopy(temp, 0, projectionMatrix, 0, temp.size)
-
     }
 
     companion object {
