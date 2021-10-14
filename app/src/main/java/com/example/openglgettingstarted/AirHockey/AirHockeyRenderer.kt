@@ -2,10 +2,11 @@ package com.example.openglgettingstarted.AirHockey
 
 import android.content.Context
 import android.opengl.GLES20
-import android.opengl.Matrix.orthoM
+import android.opengl.Matrix.*
 import com.example.openglgettingstarted.AirHockey.CoordinateData.CoordinateData
 import com.example.openglgettingstarted.R
 import com.example.openglgettingstarted.util.LoggerConfig
+import com.example.openglgettingstarted.util.MatrixHelper
 import com.example.openglgettingstarted.util.ShaderHelper
 import com.example.openglgettingstarted.util.readTextFileFromResource
 import java.nio.ByteBuffer
@@ -119,13 +120,22 @@ class AirHockeyRenderer {
     }
 
     public fun adjustRatio(width : Int, height : Int) {
-        if (width > height) {
-            val aspectRatio = width.toFloat() / height.toFloat()
-            orthoM(projectionMatrix, 0, -aspectRatio, aspectRatio, -1f, 1f, -1f, 1f)
-        } else {
-            val aspectRatio = height.toFloat() / width.toFloat()
-            orthoM(projectionMatrix, 0, -1f, 1f, -aspectRatio, aspectRatio, -1f, 1f)
-        }
+//        if (width > height) {
+//            val aspectRatio = width.toFloat() / height.toFloat()
+//            orthoM(projectionMatrix, 0, -aspectRatio, aspectRatio, -1f, 1f, -1f, 1f)
+//        } else {
+//            val aspectRatio = height.toFloat() / width.toFloat()
+//            orthoM(projectionMatrix, 0, -1f, 1f, -aspectRatio, aspectRatio, -1f, 1f)
+//        }
+
+        val modelMatrix : FloatArray = FloatArray(16)
+        MatrixHelper.perspectiveM(projectionMatrix, 45.toFloat(), width.toFloat() / height.toFloat(), 1f, 0f)
+        setIdentityM(modelMatrix, 0)
+        translateM(modelMatrix, 0, 0f, 0f, -2f)
+
+        val temp : FloatArray = FloatArray(16)
+        multiplyMM(temp, 0, projectionMatrix, 0, modelMatrix, 0)
+        System.arraycopy(temp, 0, projectionMatrix, 0, temp.size)
 
     }
 

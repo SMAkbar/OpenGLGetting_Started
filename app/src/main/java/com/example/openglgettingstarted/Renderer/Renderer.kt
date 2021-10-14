@@ -7,6 +7,7 @@ import javax.microedition.khronos.opengles.GL10
 import android.opengl.GLES20
 import android.opengl.GLSurfaceView
 import com.example.openglgettingstarted.AirHockey.AirHockeyRenderer
+import com.example.openglgettingstarted.util.MatrixHelper
 
 class Renderer (_context : Context): GLSurfaceView.Renderer  {
 
@@ -33,6 +34,7 @@ class Renderer (_context : Context): GLSurfaceView.Renderer  {
         GLES20.glViewport(0, 0, width, height)
 
         airHockeyRenderer.adjustRatio(width, height)
+
     }
 
 }
